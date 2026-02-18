@@ -6,7 +6,6 @@ use std::type_name;
 use sui::package::Publisher;
 use upgradeable_contract::error_codes;
 
-
 /// Shared object with `version` which updates on every upgrade.
 /// Used as input to force the end-user to use the latest contract version.
 /// dev: Add a boolean flag to pause the package, so that the developer can pause the package and prevent any interactions with the package, the upgrade flow would work as:
@@ -54,11 +53,11 @@ public(package) fun is_supported_version_for_object<T>(object_version: u64): boo
     if (
         module_name == b"versioning_shared_objects".to_string() && struct_name == b"SharedPool".to_string()
     ) {
-        object_version == 2
+        object_version == 2 // or (<= n), or (>= x && <= n) in case this shared object does not have a version n
     } else if (
         module_name == b"versioning_shared_objects".to_string() && struct_name == b"SharedRegistry".to_string()
     ) {
-        object_version == 2
+        object_version == 2 // or (<= n), or (>= x && <= n) in case this shared object does not have a version n
     } else {
         false
     }
