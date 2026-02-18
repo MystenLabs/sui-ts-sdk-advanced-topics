@@ -60,16 +60,29 @@ public fun get_pool_version<T0, T1>(pool: &SharedPool<T0, T1>): u64 {
 }
 
 // ==================== MIGRATION FUNCTIONS ====================
+/// dev:
+/// These migration function examples gate the migration to the package version (current_version!()). 
+/// Depending on the business case, there might be cases in which the developer might:
+/// - disable the migration in package versions, and re-enable it in others
+/// - unlink the migration function from the package version(current_version!()) and use an arbitrary version inside the functions instead
 
 /// Example function to migrate the version of the shared pool
 public fun migrate_shared_pool<T0, T1>(publisher: &Publisher, pool: &mut SharedPool<T0, T1>) {
     assert!(publisher.from_package<VERSIONING_SHARED_OBJECTS>(), error_codes::EInvalidPublisher!());
+    assert!(
+        pool.version < version_manager::current_version!(),
+        error_codes::EVersionDowngradeNotAllowed!(),
+    );
     pool.version = version_manager::current_version!();
 }
 
 /// Example function to migrate the version of the shared registry
 public fun migrate_shared_registry(publisher: &Publisher, registry: &mut SharedRegistry) {
     assert!(publisher.from_package<VERSIONING_SHARED_OBJECTS>(), error_codes::EInvalidPublisher!());
+    assert!(
+        registry.version < version_manager::current_version!(),
+        error_codes::EVersionDowngradeNotAllowed!(),
+    );
     registry.version = version_manager::current_version!();
 }
 
