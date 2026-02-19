@@ -85,6 +85,7 @@ public fun unpause(version: &mut Version) {
 
 public fun migrate(pub: &Publisher, version: &mut Version) {
     assert!(pub.from_package<Version>(), error_codes::EInvalidPublisher!());
+    assert!(version.version < current_version!(), error_codes::EVersionDowngradeNotAllowed!());
     version.version = current_version!();
 }
 
